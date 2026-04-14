@@ -1,6 +1,6 @@
 # Aura – CLI Compile Guide (arduino-cli)
 
-Compile [Surrey-Homeware/Aura](https://github.com/Surrey-Homeware/Aura) without Arduino IDE.
+Compile [/Aura](https://github.com/oernii/Aura) without Arduino IDE.
 
 ---
 
@@ -28,7 +28,7 @@ arduino-cli core install esp32:esp32
 ## 3. Clone the Repo
 
 ```bash
-git clone https://github.com/Surrey-Homeware/Aura.git
+git clone git@github.com:oernii/Aura.git
 cd Aura
 ```
 
@@ -53,49 +53,37 @@ cp -r TFT_eSPI ~/Arduino/libraries/TFT_eSPI
 
 ```bash
 cp lvgl/src/lv_conf.h ~/Arduino/libraries/lvgl/
+cp lvgl/src/lv_conf.h ~/Arduino/libraries/
+cp lvgl/src/lv_conf.h ~/Arduino/
 ```
 
 ---
 
-## 6. Copy Sketch Folder to Arduino Directory
+## 6. Compile
+
+> Sketch is located at `aura/weather/` inside the repo.
 
 ```bash
-cp -r aura ~/Arduino/aura
+arduino-cli compile --fqbn esp32:esp32:esp32:PartitionScheme=huge_app \
+  --libraries ~/Arduino/libraries aura/weather
 ```
 
 ---
 
-## 7. Compile
-
-```bash
-arduino-cli compile \
-  --fqbn esp32:esp32:esp32:PartitionScheme=huge_app \
-  --libraries ~/Arduino/libraries \
-  ~/Arduino/aura
-```
-
----
-
-## 8. Upload
+## 7. Upload
 
 > Replace `/dev/ttyUSB0` with your actual port.
 
 ```bash
-arduino-cli upload \
-  --fqbn esp32:esp32:esp32:PartitionScheme=huge_app \
-  --port /dev/ttyUSB0 \
-  ~/Arduino/aura
+arduino-cli upload --fqbn esp32:esp32:esp32:PartitionScheme=huge_app \
+  --port /dev/ttyUSB0 aura/weather
 ```
 
 ---
 
-## Notes
+## Auto-Reboot Every X Hours - seems to freeze sometimes
+**1. Add the interval define near the top of the file** (with other `#define` config values):
 
-- `PartitionScheme=huge_app` maps to **Huge App (3MB No OTA/1MB SPIFFS)** as required by the project.
-- **TFT_eSPI** is included in the repo with its config pre-set — use that copy, not the library manager version.
-- Find your upload port with: `arduino-cli board list`
-- On some systems use `/dev/ttyACM0` instead of `/dev/ttyUSB0`.
-- If you get permission errors on the port, add yourself to the `dialout` group:
-  ```bash
-  sudo usermod -aG dialout $USER
-  ```
+```cpp
+#define REBOOT_INTERVAL_HOURS 6
+```

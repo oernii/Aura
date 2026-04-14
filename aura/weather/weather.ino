@@ -18,6 +18,7 @@
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 320
 #define DRAW_BUF_SIZE (SCREEN_WIDTH * SCREEN_HEIGHT / 10 * (LV_COLOR_DEPTH / 8))
+#define REBOOT_INTERVAL_HOURS 6
 
 #define LATITUDE_DEFAULT "51.5074"
 #define LONGITUDE_DEFAULT "-0.1278"
@@ -448,6 +449,9 @@ void apModeCallback(WiFiManager *mgr) {
 }
 
 void loop() {
+  if (millis() > (unsigned long)REBOOT_INTERVAL_HOURS * 3600000UL) {
+    ESP.restart();
+  }
   lv_timer_handler();
   static uint32_t last = millis();
 
