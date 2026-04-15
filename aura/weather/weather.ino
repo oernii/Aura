@@ -333,7 +333,7 @@ static void update_clock(lv_timer_t *timer) {
 
   char buf[16];
   if (use_24_hour) {
-    snprintf(buf, sizeof(buf), "%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min);
+    snprintf(buf, sizeof(buf), "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
   } else {
     int hour = timeinfo.tm_hour % 12;
     if(hour == 0) hour = 12;
